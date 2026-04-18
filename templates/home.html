@@ -28,12 +28,16 @@
     padding: 0 24px; z-index: 1000;
   }
   .nav-logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--primary); cursor: help; }
-  .nav-right { display: flex; align-items: center; gap: 16px; }
-  .login-btn {
-    padding: 8px 16px; border-radius: 8px; background: var(--primary); color: white;
-    border: none; font-weight: 700; cursor: pointer; font-family: 'Barlow Condensed';
-    text-transform: uppercase;
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  
+  .nav-search { position: relative; display: flex; align-items: center; }
+  .nav-search input {
+    padding: 8px 16px 8px 40px; border-radius: 20px; border: 1px solid var(--border);
+    background: var(--surface-alt); color: var(--text-primary); outline: none;
+    width: 280px; font-size: 0.9rem; transition: all 0.3s;
   }
+  .nav-search input:focus { border-color: var(--primary); width: 340px; background: var(--surface); }
+  .nav-search svg { position: absolute; left: 14px; color: var(--text-secondary); pointer-events: none; }
 
   .sidebar {
     position: fixed; top: var(--nav-h); left: 0; height: calc(100vh - var(--nav-h)); width: var(--sidebar-w);
@@ -72,9 +76,37 @@
   }
   .disconnect-btn:hover { background: rgba(239, 68, 68, 0.2); }
 
-  .main-content { margin-left: var(--sidebar-w); flex: 1; padding: 48px; max-width: 1000px; }
-  h1 { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; margin-bottom: 24px; }
-  p { font-size: 1.1rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 20px; }
+  .main-content { margin-left: var(--sidebar-w); flex: 1; padding: 48px; max-width: 1100px; }
+  .section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 2.5rem; margin-bottom: 24px; color: var(--text-primary); }
+  .about-card { background: var(--surface); border: 1px solid var(--border); padding: 32px; border-radius: 16px; margin-bottom: 40px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+  .about-text { font-size: 1.15rem; line-height: 1.8; color: var(--text-secondary); }
+  
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; margin-bottom: 48px; }
+  .service-card { 
+    background: var(--surface); border: 1px solid var(--border); padding: 24px; border-radius: 12px; 
+    transition: all 0.3s; display: flex; flex-direction: column; gap: 12px;
+  }
+  .service-card:hover { border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+  .service-icon { font-size: 2rem; color: var(--primary); }
+  .service-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 700; text-transform: uppercase; color: var(--text-primary); }
+  .service-desc { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; }
+
+  .internal-disclaimer { 
+    background: rgba(59, 130, 246, 0.05); border-left: 4px solid var(--primary); 
+    padding: 20px 24px; border-radius: 0 12px 12px 0; margin-bottom: 40px;
+  }
+  .disclaimer-title { font-weight: 700; color: var(--primary); text-transform: uppercase; font-size: 0.85rem; margin-bottom: 8px; letter-spacing: 0.05em; }
+  .disclaimer-text { font-size: 1rem; color: var(--text-secondary); }
+
+  .footer-note { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border); text-align: center; }
+  .academic-credit { font-size: 0.85rem; color: var(--text-muted); opacity: 0.7; }
+  
+  .contact-section { margin-top: 48px; }
+  .contact-info { display: flex; gap: 32px; flex-wrap: wrap; }
+  .contact-item { display: flex; align-items: center; gap: 12px; color: var(--text-secondary); font-size: 1rem; }
+  
+  .search-highlight { background: rgba(59, 130, 246, 0.2); border-bottom: 2px solid var(--primary); color: var(--text-primary); border-radius: 2px; }
+  .hidden { display: none !important; }
 </style>
 </head>
 <body>
@@ -83,6 +115,10 @@
       SBT <span style="font-size: 0.8rem; font-weight: 400; opacity: 0.7; margin-left: 4px; font-family: 'Barlow'; vertical-align: middle;">Smart Brain Technology</span>
     </div>
     <div class="nav-right">
+      <div class="nav-search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="main-search" placeholder="Search services or information...">
+      </div>
       <span style="font-weight: 700; font-family: 'Barlow Condensed'; text-transform: uppercase; color: var(--text-secondary);">{{ user.fullname }}</span>
     </div>
   </nav>
@@ -123,16 +159,104 @@
     
     <button class="disconnect-btn" id="disconnect-btn">Disconnect</button>
   </div>
-  <div class="main-content">
-    <h1>Smart Brain Technology</h1>
-    <p>Welcome to the SBT Vision Intelligence Hub. This platform orchestrates multi-agent pipelines for industrial quality control and technical documentation extraction.</p>
-    <p>Use the sidebar to navigate between the Connector Intake Pipeline and the real-time QC Conformity check.</p>
+  <div class="main-content" id="searchable-content">
+    <div class="internal-disclaimer">
+      <div class="disclaimer-title">Internal Use Only</div>
+      <div class="disclaimer-text">This SBT Vision Intelligence Hub is designed for internal industrial orchestration and quality control. This platform is not intended for web users or external clients.</div>
+    </div>
+
+    <section class="about-section">
+      <h2 class="section-title">Smart Brain Technologie</h2>
+      <div class="about-card">
+        <p class="about-text">
+          Smart Brain Technologie (SBT) is an industrial subcontracting company specializing in the manufacture of electrical harnesses and electrical cabinets. 
+          With years of expertise in electrical wiring, we are committed to meeting the most demanding industrial requirements through advanced technology and highly qualified teams.
+        </p>
+      </div>
+    </section>
+
+    <section class="services-section">
+      <h2 class="section-title">Our Industrial Expertise</h2>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">✂️</div>
+          <div class="service-name">Coupe (Cutting)</div>
+          <div class="service-desc">Precision automated cutting of electrical wires for various harness configurations.</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🔧</div>
+          <div class="service-name">Sertissage (Crimping)</div>
+          <div class="service-desc">High-reliability terminal crimping using state-of-the-art industrial equipment.</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">⚡</div>
+          <div class="service-name">Soudure ultrason</div>
+          <div class="service-desc">Ultrasonic welding for superior electrical conductivity and mechanical strength.</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🧩</div>
+          <div class="service-name">Assemblage</div>
+          <div class="service-desc">Manual and semi-automated assembly of complex electrical harnesses.</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🔍</div>
+          <div class="service-name">Contrôle électrique</div>
+          <div class="service-desc">Rigorous electrical testing and conformity checks for all finished products.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-section">
+      <h2 class="section-title">Contact & Location</h2>
+      <div class="contact-info">
+        <div class="contact-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Route Oum Hachem, Grombalia (40 mins from Tunis)</span>
+        </div>
+        <div class="contact-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>Contact our industrial methods team for inquiries.</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      <div class="academic-credit">Developed by The Token Thieves in 2026 as an academic collaboration.</div>
+    </div>
   </div>
 
   <script>
     const themeToggle = document.getElementById('theme-toggle');
     const disconnectBtn = document.getElementById('disconnect-btn');
+    const mainSearch = document.getElementById('main-search');
     
+    // Search Functionality
+    mainSearch.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      const searchableElements = document.querySelectorAll('.service-card, .about-card, .internal-disclaimer, .contact-item, .section-title');
+      
+      searchableElements.forEach(el => {
+        const text = el.innerText.toLowerCase();
+        if (text.includes(query)) {
+          el.classList.remove('hidden');
+          // Highlight matches (basic approach)
+          if (query.length > 2) {
+            // el.innerHTML = el.innerHTML.replace(new RegExp(`(${query})`, 'gi'), '<span class="search-highlight">$1</span>');
+          }
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+      
+      // Handle sections visibility
+      document.querySelectorAll('section').forEach(section => {
+        const hasVisible = section.querySelectorAll('.service-card:not(.hidden), .about-card:not(.hidden), .contact-item:not(.hidden)').length > 0;
+        if (hasVisible) section.classList.remove('hidden');
+        else if (query.length > 0) section.classList.add('hidden');
+        else section.classList.remove('hidden');
+      });
+    });
+
     // Load theme
     if (localStorage.getItem('theme') === 'dark') {
       document.body.classList.add('dark-mode');
