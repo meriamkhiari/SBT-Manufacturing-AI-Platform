@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - SBT</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #3b82f6; --primary-dark: #1e40af;
+    --bg: #f8fafc; --surface: #ffffff; --surface-alt: #f1f5f9;
+    --text-primary: #0f172a; --text-secondary: #64748b;
+    --border: #e2e8f0;
+  }
+  body.dark-mode {
+    --bg: #0f172a; --surface: #1e293b; --surface-alt: #334155;
+    --text-primary: #f8fafc; --text-secondary: #cbd5e1;
+    --border: #334155;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--text-primary); display: flex; align-items: center; justify-content: center; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+
+  .login-container {
+    width: 100%; max-width: 440px; padding: 40px; background: var(--surface);
+    border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+  }
+  .logo-header { text-align: center; margin-bottom: 32px; }
+  .logo-text { font-family: 'Barlow Condensed', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--primary); }
+  .logo-sub { font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .toggle-auth { display: flex; background: var(--surface-alt); padding: 4px; border-radius: 8px; margin-bottom: 32px; }
+  .toggle-btn { flex: 1; padding: 10px; border: none; background: transparent; border-radius: 6px; font-weight: 600; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; font-family: inherit; }
+  .toggle-btn.active { background: var(--surface); color: var(--primary); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+
+  .form-group { margin-bottom: 20px; }
+  .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px; }
+  .form-input { width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-alt); color: var(--text-primary); font-family: inherit; font-size: 1rem; transition: border-color 0.2s; }
+  .form-input:focus { border-color: var(--primary); outline: none; background: var(--surface); }
+
+  /* ── ROLE SELECTION UI ── */
+  .role-selection { display: flex; gap: 12px; margin-top: 8px; }
+  .role-card { flex: 1; position: relative; cursor: pointer; }
+  .role-card input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .role-ui {
+    padding: 16px; border-radius: 10px; border: 2px solid var(--border); text-align: center;
+    transition: all 0.2s; background: var(--surface-alt);
+  }
+  .role-card input:checked + .role-ui { border-color: var(--primary); background: rgba(59, 130, 246, 0.05); }
+  .role-icon { font-size: 1.5rem; margin-bottom: 8px; display: block; }
+  .role-name { font-weight: 700; font-size: 0.9rem; font-family: 'Barlow Condensed'; text-transform: uppercase; }
+  .role-card input:checked + .role-ui .role-name { color: var(--primary); }
+
+  .submit-btn {
+    width: 100%; padding: 14px; border-radius: 8px; background: var(--primary); color: white;
+    border: none; font-weight: 700; cursor: pointer; font-family: 'Barlow Condensed';
+    text-transform: uppercase; font-size: 1.1rem; margin-top: 12px; transition: background 0.2s;
+  }
+  .submit-btn:hover { background: var(--primary-dark); }
+
+  .hidden { display: none; }
+  .error-msg { color: #ef4444; font-size: 0.85rem; margin-top: 8px; text-align: center; }
+</style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo-header">
+      <div class="logo-text">SBT</div>
+      <div class="logo-sub">Smart Brain Technology</div>
+    </div>
+
+    <div class="toggle-auth">
+      <button class="toggle-btn active" onclick="showAuth('login')">LOGIN</button>
+      <button class="toggle-btn" onclick="showAuth('signup')">SIGN UP</button>
+    </div>
+
+    <!-- Login Form -->
+    <form id="login-form" action="/login" method="POST">
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-input" required placeholder="Enter username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-input" required placeholder="••••••••">
+      </div>
+      {% if error %}
+        <div class="error-msg">{{ error }}</div>
+      {% endif %}
+      <button type="submit" class="submit-btn">Continue</button>
+    </form>
+
+    <!-- Sign Up Form -->
+    <form id="signup-form" action="/signup" method="POST" class="hidden">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" name="fullname" class="form-input" required placeholder="John Doe">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-input" required placeholder="jdoe">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-input" required placeholder="••••••••">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Choose Role</label>
+        <div class="role-selection">
+          <label class="role-card">
+            <input type="radio" name="role" value="employee" checked>
+            <div class="role-ui">
+              <span class="role-icon">👤</span>
+              <span class="role-name">Employee</span>
+            </div>
+          </label>
+          <label class="role-card">
+            <input type="radio" name="role" value="admin">
+            <div class="role-ui">
+              <span class="role-icon">🔑</span>
+              <span class="role-name">Admin</span>
+            </div>
+          </label>
+        </div>
+      </div>
+      
+      <button type="submit" class="submit-btn">Create Account</button>
+    </form>
+  </div>
+
+  <script>
+    function showAuth(type) {
+      const loginForm = document.getElementById('login-form');
+      const signupForm = document.getElementById('signup-form');
+      const buttons = document.querySelectorAll('.toggle-btn');
+      
+      if (type === 'login') {
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+        buttons[0].classList.add('active');
+        buttons[1].classList.remove('active');
+      } else {
+        loginForm.classList.add('hidden');
+        signupForm.classList.remove('hidden');
+        buttons[0].classList.remove('active');
+        buttons[1].classList.add('active');
+      }
+    }
+
+    // Load theme
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+  </script>
+</body>
+</html>
