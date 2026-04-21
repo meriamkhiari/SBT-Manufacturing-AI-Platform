@@ -10,7 +10,8 @@ def run(run_id: str, ref_cavity_map: dict, user_cavity_map: dict) -> dict:
     Inputs: ref_cavity_map, user_cavity_map, Shared Context Dict
     """
     metrics_tracker.start_timer(run_id, "JudgeMatch")
-    push_log(run_id, "Judging match between reference and user photo...", "agent")
+    push_log(run_id, "=== JUDGE AGENT: Conformity Scoring ===", "agent")
+    push_log(run_id, "Comparing live extraction with documentation reference...")
     
     if not ref_cavity_map:
         push_log(run_id, "Reference data missing. Cannot judge.", "warn")

@@ -3,15 +3,24 @@ import json
 import base64
 from agents.shared import call_gemini, push_log, metrics_tracker
 
-def run(run_id: str, image_data_url: str, expected_reference: str) -> dict:
+# -- Vision prompt --
+_VISION_PROMPT = (
+    "You are analyzing a live camera photo of an electrical connector.\n"
+    "Identify:\n"
+    "1. The connector reference if visible.\n"
+    "2. Port-to-color mapping for ALL visible terminal cavities.\n"
+    "3. Orientation state: 'normal', 'mirrored' (left-right flip), or 'rotated_180'.\n\n"
+    "Return ONLY clean JSON:\n"
+    '{"reference":"...","orientation":"...","terminals":[{"ports":[{"port":1,"color":"..."}]}]}'
+)
+
+
+def run(run_id: str, image_data_url: str) -> dict:
     """
-    AGENT : describeUser
-    Role: Use LLaVA (via Gemini) to generate a structured cavity map from the live user/production photo.
-    Input: A real time camera opens up, is shown a connector, extracts the connector type in it, 
-           number of ports, their colors and compares them to existing mongoDB connectors.
+    Call Gemini Vision with the user's photo.
     """
-    metrics_tracker.start_timer(run_id, "describeUser")
-    push_log(run_id, f"Describing user photo (Expected: {expected_reference})...", "agent")
+    push_log(run_id, "=== DESCRIBE USER AGENT: Live Frame Analyzer ===", "agent")
+    push_log(run_id, "Calling Gemini 2.5 Flash for live visual extraction...")
     
     # Strip base64 prefix
     if "," in image_data_url:

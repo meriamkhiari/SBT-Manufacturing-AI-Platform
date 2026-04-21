@@ -37,7 +37,7 @@ def run(run_id: str, data: dict) -> dict:
     Always returns a dict -- never raises (errors are embedded as validation_error).
     """
     push_log(run_id, "--- VALIDATE AGENT: OpenRouter Validator + Corrector ---", "agent")
-    push_log(run_id, "Model: openrouter/free | Sending JSON for validation/correction…")
+    push_log(run_id, "Model: openrouter/free | Sending JSON for validation/correction...")
 
     prompt = _make_prompt(json.dumps(data, indent=2))
 
@@ -67,15 +67,15 @@ def run(run_id: str, data: dict) -> dict:
     if corrections:
         push_log(run_id, f"Corrections applied ({len(corrections)}):", "warn")
         for c in corrections:
-            push_log(run_id, f"  ✎ {c}", "warn")
+            push_log(run_id, f"  [EDIT] {c}", "warn")
     else:
         push_log(run_id, "No corrections needed -- JSON was already valid", "success")
 
     if "validation_error" in corrected:
-        push_log(run_id, f"⚠ Uncorrectable: {corrected['validation_error']}", "error")
+        push_log(run_id, f"[!] Uncorrectable: {corrected['validation_error']}", "error")
         push_log(run_id, "-> ValidateAgent passing ERROR INDICATOR to StoreAgent", "handoff")
     else:
-        push_log(run_id, "✓ JSON validated and corrected", "success")
+        push_log(run_id, "[OK] JSON validated and corrected", "success")
         push_log(run_id, "-> ValidateAgent handing off to StoreAgent", "handoff")
 
     return corrected

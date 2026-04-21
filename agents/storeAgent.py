@@ -11,7 +11,7 @@ from .shared import (
     MONGO_URI, MONGO_DB, MONGO_COLL, MCP_BIN,
 )
 
-# ── Tool definition given to the LLM ─────────────────────────────────────
+# -- Tool definition given to the LLM --
 _INSERT_TOOL = {
     "type": "function",
     "function": {
@@ -35,11 +35,11 @@ _INSERT_TOOL = {
 _SYSTEM_PROMPT = (
     "You are a database storage agent. You will receive a document that must be "
     "persisted to MongoDB. You MUST call the insert_document tool to store it. "
-    "Do not summarise or explain — just call the tool immediately."
+    "Do not summarise or explain - just call the tool immediately."
 )
 
 
-# ── MCP stdio transport ───────────────────────────────────────────────────
+# -- MCP stdio transport --
 
 def _spawn_mcp() -> subprocess.Popen:
     """Spawn mongodb-mcp-server, trying binary then npx (with shell on Windows)."""
@@ -69,9 +69,9 @@ def _mcp_stdio_insert(document: dict, database: str, collection: str) -> dict:
     then call the correct insert tool (name varies by MCP server version).
 
     Tool name candidates (tried in order of preference):
-      insert-many  — official MongoDB MCP server (mongodb-js/mongodb-mcp-server)
-      insert-one   — older/alternative builds
-      insertOne    — community MCP servers (1RB/mongo-mcp, ryaker/mongodb-mcp-server)
+      insert-many  - official MongoDB MCP server (mongodb-js/mongodb-mcp-server)
+      insert-one   - older/alternative builds
+      insertOne    - community MCP servers (1RB/mongo-mcp, ryaker/mongodb-mcp-server)
     """
     proc = _spawn_mcp()
 
@@ -100,9 +100,9 @@ def _mcp_stdio_insert(document: dict, database: str, collection: str) -> dict:
             except json.JSONDecodeError:
                 continue  # skip startup banners / non-JSON lines
             if msg.get("id") is None:
-                continue  # notification — skip
+                continue  # notification - skip
             if str(msg.get("id")) != str(expected_id):
-                continue  # different request — skip
+                continue  # different request - skip
             return msg
 
     try:
@@ -128,9 +128,9 @@ def _mcp_stdio_insert(document: dict, database: str, collection: str) -> dict:
         }
 
         # 4. Pick the correct insert tool and build arguments accordingly
-        #    insert-many  → documents: [doc]   (official MongoDB MCP server)
-        #    insert-one   → document:  doc     (older builds)
-        #    insertOne    → document:  doc     (community servers)
+        #    insert-many  -> documents: [doc]   (official MongoDB MCP server)
+        #    insert-one   -> document:  doc     (older builds)
+        #    insertOne    -> document:  doc     (community servers)
         INSERT_CANDIDATES = [
             ("insert-many", {"database": database, "collection": collection, "documents": [document]}),
             ("insert-one",  {"database": database, "collection": collection, "document": document}),
@@ -181,11 +181,174 @@ def _parse_inserted_id(mcp_result: dict) -> str:
     """
     Extract the insertedId from an MCP tools/call result.
     Handles multiple response shapes:
-      - insert-many  → insertedIds: {"0": "..."} or insertedCount + first id
-      - insert-one   → insertedId: "..."
-      - insertOne    → insertedId: "..."
+      - insert-many  -> insertedIds: {"0": "..."} or insertedCount + first id
+      - insert-one   -> insertedId: "..."
+      - insertOne    -> insertedId: "..."
     """
     if not mcp_result:
+        return "unknown"
+
+    # Direct top-level keys (some versions)
+    if "insertedId" in mcp_result:
+        return str(mcp_result["insertedId"])
+    if "insertedIds" in mcp_result:
+        ids = mcp_result["insertedIds"]
+        if isinstance(ids, dict):
+            return str(next(iter(ids.values()), "unknown"))
+        if isinstance(ids, list) and ids:
+            return str(ids[0])
+
+    # Content blocks (most common - text JSON inside content array)
+    for block in mcp_result.get("content", []):
+        text = block.get("text", "") if isinstance(block, dict) else str(block)
+        if not text:
+            continue
+        try:
+            inner = json.loads(text)
+            if isinstance(inner, dict):
+                # insert-one / insertOne shape
+                for key in ("insertedId", "_id", "id"):
+                    if key in inner:
+                        return str(inner[key])
+                # insert-many shape
+                if "insertedIds" in inner:
+                    ids = inner["insertedIds"]
+                    if isinstance(ids, dict):
+                        return str(next(iter(ids.values()), "unknown"))
+                    if isinstance(ids, list) and ids:
+                        return str(ids[0])
+                return str(inner)[:120]
+            return str(inner)[:120]
+        except Exception:
+            return text.strip()[:120]
+
+    if isinstance(mcp_result, str):
+        return mcp_result[:120]
+
+    return str(mcp_result)[:120]
+
+
+# -- Public entry point --
+
+def run(run_id: str, data: dict) -> dict:
+    """
+    LLM-agent loop: OpenRouter decides to call insert_document,
+    Flask executes it via MCP stdio, result fed back to LLM for confirmation.
+    """
+    push_log(run_id, "STORE AGENT: OpenRouter LLM Agent + MongoDB MCP", "agent")
+    push_log(run_id, "Model: openrouter/free | MCP transport: stdio")
+
+    has_error = "validation_error" in data
+    now       = datetime.datetime.utcnow().isoformat() + "Z"
+
+    # -- Build document ----------------------------------------------------
+    if has_error:
+        push_log(run_id, f"Error indicator from ValidateAgent: {data['validation_error']}", "error")
+        push_log(run_id, "Instructing LLM agent to store failure record...", "warn")
+        doc = {
+            "pipeline_status":       "failed",
+            "validation_error":      data["validation_error"],
+            "inserted_at":           now,
+            "reference":             data.get("reference", "unknown"),
+            "corrections":           data.get("corrections", []),
+            "terminals":             len(data.get("terminals", [])),
+            "total_ports":           sum(len(t.get("ports", [])) for t in data.get("terminals", [])),
+            "mcp_transport":         "stdio",
+        }
+    else:
+        push_log(run_id, "JSON is valid. Instructing LLM agent to store success record...", "success")
+        doc = {
+            "pipeline_status": "success",
+            "reference":       data["reference"],
+            "terminals":       len(data["terminals"]),
+            "total_ports":     sum(len(t["ports"]) for t in data["terminals"]),
+            "terminals_data":  data["terminals"],
+            "corrections":     data.get("corrections", []),
+            "inserted_at":     now,
+            "mcp_transport":   "stdio",
+        }
+
+    # -- Step 1: LLM decides to call insert_document --
+    push_log(run_id, "Step 1 - Sending document to LLM with MCP tool definition...")
+    messages = [
+        {"role": "system", "content": _SYSTEM_PROMPT},
+        {"role": "user",   "content": f"Please store this document: {json.dumps(doc)}"},
+    ]
+
+    try:
+        choice = call_openrouter(
+            messages,
+            run_id=run_id,
+            label="StoreAgent/llm_decide",
+            tools=[_INSERT_TOOL],
+            tool_choice={"type": "function", "function": {"name": "insert_document"}},
+        )
+        msg          = choice.get("message", {})
+        tool_calls   = msg.get("tool_calls", [])
+        finish       = choice.get("finish_reason", "unknown")
+
+        push_log(run_id, f"LLM responded - finish_reason: {finish} | tool_calls: {len(tool_calls)}")
+
+        if not tool_calls:
+            raise RuntimeError(
+                f"LLM did not call insert_document - finish={finish}, "
+                f"content={msg.get('content')}"
+            )
+
+        tc       = tool_calls[0]
+        tc_name  = tc.get("function", {}).get("name")
+        tc_args  = json.loads(tc.get("function", {}).get("arguments", "{}"))
+
+        push_log(run_id, f"Step 2 - LLM called: {tc_name}({list(tc_args.keys())})", "success")
+        push_log(run_id, "Spawning mongodb-mcp-server (stdio) -> insert-one...")
+
+        # -- Step 2: Execute via MCP stdio --
+        mcp_res = _mcp_stdio_insert(
+            document=tc_args["document"],
+            database=tc_args["database"],
+            collection=tc_args["collection"]
+        )
+
+        inserted_id = _parse_inserted_id(mcp_res)
+        push_log(run_id, f"MCP stdio execution successful. insertedId: {inserted_id}", "success")
+
+        # -- Step 3: Feed result back to LLM for confirmation --
+        push_log(run_id, "Step 3 - Returning MCP result to LLM for confirmation...")
+        messages.append(msg)
+        messages.append({
+            "role": "tool",
+            "tool_call_id": tc["id"],
+            "name": tc_name,
+            "content": json.dumps(mcp_res)
+        })
+
+        final_choice = call_openrouter(
+            messages,
+            run_id=run_id,
+            label="StoreAgent/llm_confirm"
+        )
+        final_text = final_choice.get("message", {}).get("content", "")
+        push_log(run_id, f"LLM confirmation: {final_text[:100]}...", "success")
+
+        return {
+            "insertedId":     inserted_id,
+            "database":       tc_args["database"],
+            "collection":     tc_args["collection"],
+            "reference":      doc.get("reference"),
+            "terminals":      doc.get("terminals"),
+            "total_ports":    doc.get("total_ports"),
+            "timestamp":      doc.get("inserted_at"),
+            "mcp_transport":  "stdio",
+            "llm_tool_call":  tc_name,
+            "validation_error": data.get("validation_error"),
+            "corrections":    data.get("corrections"),
+            "terminals_data": data.get("terminals")
+        }
+
+    except Exception as e:
+        push_log(run_id, f"StoreAgent failed: {e}", "error")
+        raise
+if not mcp_result:
         return "unknown"
 
     # Direct top-level keys (some versions)

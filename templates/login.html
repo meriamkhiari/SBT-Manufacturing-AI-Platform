@@ -37,7 +37,7 @@
   .form-input { width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-alt); color: var(--text-primary); font-family: inherit; font-size: 1rem; transition: border-color 0.2s; }
   .form-input:focus { border-color: var(--primary); outline: none; background: var(--surface); }
 
-  /* ── ROLE SELECTION UI ── */
+  /* -- ROLE SELECTION UI -- */
   .role-selection { display: flex; gap: 12px; margin-top: 8px; }
   .role-card { flex: 1; position: relative; cursor: pointer; }
   .role-card input { position: absolute; opacity: 0; width: 0; height: 0; }
@@ -110,14 +110,14 @@
           <label class="role-card">
             <input type="radio" name="role" value="employee" checked>
             <div class="role-ui">
-              <span class="role-icon">👤</span>
+              <span class="role-icon">[E]</span>
               <span class="role-name">Employee</span>
             </div>
           </label>
           <label class="role-card">
             <input type="radio" name="role" value="admin">
             <div class="role-ui">
-              <span class="role-icon">🔑</span>
+              <span class="role-icon">[A]</span>
               <span class="role-name">Admin</span>
             </div>
           </label>

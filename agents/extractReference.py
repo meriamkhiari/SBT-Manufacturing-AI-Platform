@@ -5,11 +5,10 @@ from agents.shared import MONGO_URI, MONGO_DB, MONGO_COLL, push_log, metrics_tra
 
 def run(run_id: str, reference: str) -> dict:
     """
-    AGENT : extractReference
-    Role: Use the agents from part A's extractions (from MongoDB).
+    Fetch the reference data from MongoDB.
     """
-    metrics_tracker.start_timer(run_id, "extractReference")
-    push_log(run_id, f"Extracting reference data for: {reference}", "agent")
+    push_log(run_id, "=== EXTRACT REFERENCE AGENT: Database Lookup ===", "agent")
+    push_log(run_id, f"Searching MongoDB for reference: {reference}...")
     
     try:
         client = MongoClient(MONGO_URI)

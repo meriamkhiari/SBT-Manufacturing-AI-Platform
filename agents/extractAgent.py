@@ -6,21 +6,21 @@ from .shared import OPENROUTER_KEY, call_openrouter
 
 bp = Blueprint("extractAgent", __name__)
 
-# ── Reference description used in scoring prompt ──────────────────────────
+# -- Reference description used in scoring prompt --
 REFERENCE_DESC = (
     "A close-up photo of a real electrical terminal block (6 or 9 circular ports "
-    "in a 2×3 or 3×3 grid) with actual insulated wires physically inserted into "
+    "in a 2x3 or 3x3 grid) with actual insulated wires physically inserted into "
     "the metal clamp contacts inside the ports. The block is gray, white, or brown "
     "plastic. Visible metallic contacts/clamps inside the holes confirm real wire "
     "insertion. Wire colors include blue, white, red, black, grey, orange, yellow, "
     "brown. The entire block face must be visible and in focus."
 )
 
-# ── Disqualifying patterns ─────────────────────────────────────────────────
+# -- Disqualifying patterns --
 _REJECT_CRITERIA = (
     "AUTOMATICALLY score 0 and set hasConnector=false for ANY of these:\n"
     "- Diagram or illustration with colored circles/dots drawn on the block "
-    "(not real wires — colored filled circles are reference cards, not photos)\n"
+    "(not real wires - colored filled circles are reference cards, not photos)\n"
     "- Blade connectors, housing plugs, Molex-style or JST connectors "
     "(any connector that is NOT a circular-port terminal block)\n"
     "- Only a single wire or cable visible with no terminal block in frame\n"
@@ -59,14 +59,14 @@ def score():
                     f"IDEAL IMAGE: {REFERENCE_DESC}\n\n"
                     f"{_REJECT_CRITERIA}\n"
                     "SCORING GUIDE (after applying reject criteria above):\n"
-                    "  90-100 — Full block face visible, all ports clear, real wires inserted, "
+                    "  90-100 - Full block face visible, all ports clear, real wires inserted, "
                     "metallic contacts visible, good lighting, minimal angle distortion\n"
-                    "  60-89  — Block visible with real wires but partially cropped, "
+                    "  60-89  - Block visible with real wires but partially cropped, "
                     "slight blur, or minor obstruction\n"
-                    "  30-59  — Block present but wires hard to distinguish or heavily cropped\n"
-                    "  1-29   — Block barely visible or wires absent\n"
-                    "  0      — Matches any AUTOMATIC REJECT criterion above\n\n"
-                    'Reply ONLY with this exact JSON — no extra text:\n'
+                    "  30-59  - Block present but wires hard to distinguish or heavily cropped\n"
+                    "  1-29   - Block barely visible or wires absent\n"
+                    "  0      - Matches any AUTOMATIC REJECT criterion above\n\n"
+                    'Reply ONLY with this exact JSON - no extra text:\n'
                     '{"score":<0-100>,"hasConnector":true/false,"reason":"one short sentence"}'
                 ),
             },

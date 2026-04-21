@@ -31,7 +31,7 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:var(--body);background:var(--bg);color:var(--text-primary);min-height:100vh;padding:var(--nav-h) 0 80px;display:flex;transition: background 0.3s, color 0.3s;}
 
-  /* ── NAVBAR ── */
+  /* -- NAVBAR -- */
   .navbar{
     position:fixed;top:0;left:0;right:0;height:var(--nav-h);
     background:var(--surface);border-bottom:1px solid var(--border);
@@ -54,7 +54,7 @@
     text-transform: uppercase;
   }
 
-  /* ── SIDEBAR ── */
+  /* -- SIDEBAR -- */
   .sidebar{
     position:fixed;top:var(--nav-h);left:0;height:calc(100vh - var(--nav-h));width:var(--sidebar-w);
     background:var(--surface);border-right:1px solid var(--border);
@@ -102,14 +102,14 @@
   }
   .disconnect-btn:hover { background: rgba(239, 68, 68, 0.2); }
 
-  /* ── MAIN WRAPPER ── */
+  /* -- MAIN WRAPPER -- */
   .main-wrap{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;max-width:calc(100vw - var(--sidebar-w));}
 
-  /* ── VIEWS ── */
+  /* -- VIEWS -- */
   .view{display:none;}
   .view.active{display:block;}
 
-  /* ── HISTORY PAGE ── */
+  /* -- HISTORY PAGE -- */
   .history-page{
     min-height:100vh;display:flex;flex-direction:column;
     align-items:center;justify-content:center;gap:12px;
@@ -119,7 +119,7 @@
   .history-page .hist-icon{font-size:2.4rem;opacity:0.35;}
   .history-page .hist-label{text-transform:uppercase;font-weight:600;letter-spacing:0.14em;}
 
-  /* ── EVERYTHING BELOW IS UNTOUCHED ── */
+  /* -- EVERYTHING BELOW IS UNTOUCHED -- */
   .masthead{background:var(--surface);border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr auto;align-items:center;padding:20px 32px;gap:40px;box-shadow:var(--shadow-xs);}
   .masthead-left{display:flex;flex-direction:column;gap:8px;}
   .eyebrow{font-family:var(--mono);font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);font-weight:600;}
@@ -259,7 +259,7 @@
 </head>
 <body>
 
-<!-- ── NAVBAR ── -->
+<!-- -- NAVBAR -- -->
 <nav class="navbar">
   <div class="nav-logo" title="Smart Brain Technology">
     SBT <span style="font-size: 0.8rem; font-weight: 400; opacity: 0.7; margin-left: 4px; font-family: 'Barlow'; vertical-align: middle;">Smart Brain Technology</span>
@@ -273,7 +273,7 @@
      </div>
 </nav>
 
-<!-- ── SIDEBAR ── -->
+<!-- -- SIDEBAR -- -->
 <div class="sidebar">
   <a href="/home" class="sidebar-home">
     <div class="sb-icon">
@@ -312,7 +312,7 @@
   <button class="disconnect-btn" id="disconnect-btn">Disconnect</button>
 </div>
 
-<!-- ══════════════ MAIN WRAP ══════════════ -->
+<!-- ============= MAIN WRAP ============= -->
 <div class="main-wrap">
 
   <div class="masthead">
@@ -328,10 +328,10 @@
       <div class="model-badge"><span class="ag">Agent 4</span><span class="mdl">mongodb-mcp-server</span></div>
     </div>
     <div class="pipe">
-      <div class="pip active" id="pip1">① PDF Extractor</div><div class="pip-arr">→</div>
-      <div class="pip" id="pip2">② Gemini Vision</div><div class="pip-arr">→</div>
-      <div class="pip" id="pip3">③ OR Validator</div><div class="pip-arr">→</div>
-      <div class="pip" id="pip4">④ MongoDB MCP</div>
+      <div class="pip active" id="pip1">1. PDF Extractor</div><div class="pip-arr">-></div>
+      <div class="pip" id="pip2">2. Gemini Vision</div><div class="pip-arr">-></div>
+      <div class="pip" id="pip3">3. OR Validator</div><div class="pip-arr">-></div>
+      <div class="pip" id="pip4">4. MongoDB MCP</div>
     </div>
     <div class="page-body">
       <div class="card">
@@ -349,44 +349,44 @@
         </div>
       </div>
       <div class="card" id="extractCard" style="display:none">
-        <div class="card-label">Agent 1 — Extraction Log (OpenRouter)</div>
+        <div class="card-label">Agent 1 - Extraction Log (OpenRouter)</div>
         <div class="log-small" id="extractLog"></div>
         <div class="score-result" id="scoreResult">
           <img class="best-img" id="bestImg" src="" alt="Best match" />
-          <div class="score-meta">Best score: <strong id="bestScore">—</strong>/100 &nbsp;·&nbsp; <span id="bestReason"></span></div>
-          <div class="ref-pill" id="refPill">—</div>
+          <div class="score-meta">Best score: <strong id="bestScore">-</strong>/100 &nbsp;.&nbsp; <span id="bestReason"></span></div>
+          <div class="ref-pill" id="refPill">-</div>
         </div>
       </div>
       <div class="dashboard" id="dashboard">
         <div class="dash-hdr">
           <div class="sdot running" id="sdot"></div>
-          <div class="dash-title">A2A Pipeline — Live</div>
-          <div class="run-badge" id="runBadge">run: —</div>
+          <div class="dash-title">A2A Pipeline - Live</div>
+          <div class="run-badge" id="runBadge">run: -</div>
         </div>
         <div class="agents-row">
           <div class="ac done" id="ac1">
             <div class="ac-num">Agent 01</div>
             <div class="ac-name">PDF Extractor</div>
             <div class="ac-model">openrouter/free</div>
-            <div class="ac-stat done">✓ complete</div>
+            <div class="ac-stat done">[OK] complete</div>
           </div>
           <div class="ac" id="ac2">
             <div class="ac-num">Agent 02</div>
             <div class="ac-name">Detector</div>
             <div class="ac-model">gemini-2.5-flash</div>
-            <div class="ac-stat idle" id="ac2s">waiting…</div>
+            <div class="ac-stat idle" id="ac2s">waiting...</div>
           </div>
           <div class="ac" id="ac3">
             <div class="ac-num">Agent 03</div>
             <div class="ac-name">Validator</div>
             <div class="ac-model">openrouter/free</div>
-            <div class="ac-stat idle" id="ac3s">waiting…</div>
+            <div class="ac-stat idle" id="ac3s">waiting...</div>
           </div>
           <div class="ac" id="ac4">
             <div class="ac-num">Agent 04</div>
             <div class="ac-name">MongoDB Storing</div>
             <div class="ac-model">mongodb-mcp-server</div>
-            <div class="ac-stat idle" id="ac4s">waiting…</div>
+            <div class="ac-stat idle" id="ac4s">waiting...</div>
           </div>
         </div>
         <div class="terminal">
@@ -394,7 +394,7 @@
             <div class="tdot" style="background:#d46060"></div>
             <div class="tdot" style="background:#c4a040"></div>
             <div class="tdot" style="background:#5aaa6a"></div>
-            <div class="term-title">pipeline.log — live SSE stream</div>
+            <div class="term-title">pipeline.log - live SSE stream</div>
           </div>
           <div class="term-body" id="termBody"></div>
         </div>
@@ -437,7 +437,7 @@ async function extractAllImages(page){
         else if(obj.bitmap)ctx.drawImage(obj.bitmap,0,0);
         else continue;
         images.push({dataUrl:c.toDataURL('image/jpeg',.95),width:obj.width,height:obj.height,pageNum:page.pageNumber});
-        xlog(`✓ ${obj.width}×${obj.height}`,'#5aaa6a');
+        xlog(`[OK] ${obj.width}x${obj.height}`,'#5aaa6a');
       }catch(e){}
     }
   }
@@ -447,7 +447,7 @@ async function extractReference(page){
   try{const tc=await page.getTextContent();const txt=tc.items.map(i=>i.str).join(' ');const m=txt.match(/GRP-\d{6}/i);return m?m[0].toUpperCase():"Reference not detected";}catch(e){return "Extraction error";}
 }
 async function scoreImage(dataUrl,idx,total){
-  xlog(`Scoring ${idx+1}/${total}…`);
+  xlog(`Scoring ${idx+1}/${total}...`);
   const r=await fetch('/api/agent1/score',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({imageB64:dataUrl.split(',')[1]})});
   if(!r.ok){const e=await r.json().catch(()=>({}));if(e.error==='RATE_LIMIT')throw new Error('RATE_LIMIT');throw new Error(e.error||`HTTP ${r.status}`);}
   return r.json();
@@ -459,15 +459,15 @@ function appendLog(ts,msg,level){
   const ln=document.createElement('div');ln.className='ll';
   ln.innerHTML=`<span class="lts">${ts}</span><span class="lmsg ${level||'info'}">${escHtml(msg)}</span>`;
   tb.appendChild(ln);tb.scrollTop=tb.scrollHeight;
-  if(msg.includes('AGENT 2:')){setAgent(2,'running','⟳ running…');setPip(2,'running');}
-  if(msg.includes('AGENT 3:')){setAgent(2,'done','✓ complete');setPip(2,'done');setAgent(3,'running','⟳ running…');setPip(3,'running');}
-  if(msg.includes('AGENT 4:')){setAgent(3,'done','✓ complete');setPip(3,'done');setAgent(4,'running','⟳ running…');setPip(4,'running');}
-  if(msg.includes('⚠ Validation error')){setAgent(3,'warn','⚠ corrected+error');setPip(3,'warn');}
+  if(msg.includes('AGENT 2:')){setAgent(2,'running','[...] running...');setPip(2,'running');}
+  if(msg.includes('AGENT 3:')){setAgent(2,'done','[OK] complete');setPip(2,'done');setAgent(3,'running','[...] running...');setPip(3,'running');}
+  if(msg.includes('AGENT 4:')){setAgent(3,'done','[OK] complete');setPip(3,'done');setAgent(4,'running','[...] running...');setPip(4,'running');}
+  if(msg.includes('[!] Validation error')){setAgent(3,'warn','[!] corrected+error');setPip(3,'warn');}
 }
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function subscribeSSE(runId){
   document.getElementById('dashboard').classList.add('visible');
-  document.getElementById('runBadge').textContent='run: '+runId.slice(0,8)+'…';
+  document.getElementById('runBadge').textContent='run: '+runId.slice(0,8)+'...';
   const es=new EventSource(`/pipeline/stream/${runId}`);
   es.onmessage=e=>{
     const d=JSON.parse(e.data);
@@ -488,7 +488,7 @@ function subscribeSSE(runId){
 function showResult(result,type){
   const card=document.getElementById('resultCard');
   card.className='result-card '+type;
-  const titles={success:'🎉 Pipeline Complete — Document Stored',warn:'⚠ Stored with Validation Error — Failure Record in DB',error:'💥 Pipeline Failed'};
+  const titles={success:'[OK] Pipeline Complete - Document Stored',warn:'[!] Stored with Validation Error - Failure Record in DB',error:'[X] Pipeline Failed'};
   document.getElementById('resTitle').textContent=titles[type];
   const grid=document.getElementById('resGrid');
   if(type==='error'){
@@ -496,12 +496,12 @@ function showResult(result,type){
   }else{
     const fields=[
       {label:'Document ID',val:result.insertedId,cls:'cyan'},
-      {label:'Status',val:result.pipeline_status==='success'?'✓ success':'⚠ error stored',cls:result.pipeline_status==='success'?'green':'amber'},
+      {label:'Status',val:result.pipeline_status==='success'?'[OK] success':'[!] error stored',cls:result.pipeline_status==='success'?'green':'amber'},
       {label:'Collection',val:`${result.database}.${result.collection}`,cls:'blue'},
-      {label:'Reference',val:result.reference||'—',cls:'green'},
+      {label:'Reference',val:result.reference||'-',cls:'green'},
       {label:'Terminals',val:`${result.terminals} block(s)`,cls:'green'},
       {label:'Total Ports',val:`${result.total_ports} ports`,cls:'blue'},
-      {label:'Timestamp',val:result.timestamp||'—',cls:''},
+      {label:'Timestamp',val:result.timestamp||'-',cls:''},
       {label:'MCP Transport',val:result.mcp_transport||'stdio',cls:'cyan'},
       {label:'LLM Tool Call',val:result.llm_tool_call||'insert_document',cls:'purple'},
     ];
@@ -509,7 +509,7 @@ function showResult(result,type){
     grid.innerHTML=fields.map(f=>`<div class="rp"><div class="rp-label">${f.label}</div><div class="rp-val ${f.cls}">${escHtml(String(f.val))}</div></div>`).join('');
   }
   const corrections=result.corrections||[];
-  if(corrections.length){document.getElementById('correctionsBox').style.display='block';document.getElementById('correctionsList').innerHTML=corrections.map(c=>`• ${escHtml(c)}`).join('<br>');}
+  if(corrections.length){document.getElementById('correctionsBox').style.display='block';document.getElementById('correctionsList').innerHTML=corrections.map(c=>`* ${escHtml(c)}`).join('<br>');}
   const termData=result.terminals_data||[];
   if(termData.length){
     const termHtml=`<div class="terminals-section"><div style="font-family:var(--head);font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:14px;text-transform:uppercase;letter-spacing:.08em;">Cable Ports Configuration</div>${termData.map((term,idx)=>{const portHtml=term.ports?.map((p,pi)=>`<div class="port-item"><div class="port-num">${p.port||pi+1}</div><div class="port-color ${p.color||'empty'}">${escHtml((p.color||'empty').substring(0,3))}</div></div>`).join('')||'';return `<div class="terminal-block"><div class="terminal-block-title">Terminal ${term.image_number||idx+1}</div><div class="terminal-block-desc">${escHtml(term.description||'Terminal block')}</div><div class="ports-display">${portHtml}</div></div>`;}).join('')}</div>`;
@@ -517,9 +517,9 @@ function showResult(result,type){
   }
   card.style.display='block';
   card.scrollIntoView({behavior:'smooth'});
-  if(type==='success'){setAgent(4,'done','✓ complete');setPip(4,'done');}
-  else if(type==='warn'){setAgent(4,'warn','⚠ error stored');setPip(4,'warn');}
-  else{setAgent(4,'error','✗ failed');setPip(4,'error');}
+  if(type==='success'){setAgent(4,'done','[OK] complete');setPip(4,'done');}
+  else if(type==='warn'){setAgent(4,'warn','[!] error stored');setPip(4,'warn');}
+  else{setAgent(4,'error','[X] failed');setPip(4,'error');}
 }
 async function run(){
   if(!pdfFile)return alert('Select a PDF file');
@@ -529,10 +529,10 @@ async function run(){
   document.getElementById('termBody').innerHTML='';
   extractLog.innerHTML='';
   document.getElementById('runBtn').disabled=true;
-  document.getElementById('runBtn').textContent='⏳ Extracting…';
+  document.getElementById('runBtn').textContent='Extracting...';
   setPip(1,'running');
   try{
-    xlog('Loading PDF…','#6a9aaa');
+    xlog('Loading PDF...','#6a9aaa');
     const pdf=await pdfjsLib.getDocument({data:await pdfFile.arrayBuffer()}).promise;
     xlog(`${pdf.numPages} pages`);
     let targetPage=null,count=0;
@@ -547,7 +547,7 @@ async function run(){
     xlog(`Reference: ${reference}`,'#6aaaaa');
     const candidates=await extractAllImages(targetPage);
     if(!candidates.length){alert('No images found on target page');return;}
-    xlog(`${candidates.length} image(s). Scoring via OpenRouter…`);
+    xlog(`${candidates.length} image(s). Scoring via OpenRouter...`);
     const scored=[];let baseDelay=1800,pending=[...candidates],attempt=0;
     while(pending.length&&attempt<8){
       attempt++;
@@ -568,7 +568,7 @@ async function run(){
     document.getElementById('refPill').textContent=reference;
     document.getElementById('scoreResult').style.display='block';
     setPip(1,'done');
-    xlog(`✓ Best score: ${best.score}/100. Firing A2A pipeline…`,'#5aaa6a');
+    xlog(`[OK] Best score: ${best.score}/100. Firing A2A pipeline...`,'#5aaa6a');
     const sr=await fetch('/api/pipeline/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({imageDataUrl:best.dataUrl,reference})});
     const {runId,error}=await sr.json();
     if(error){alert('Pipeline start error: '+error);return;}
@@ -577,14 +577,14 @@ async function run(){
   document.getElementById('runBtn').disabled=false;
   document.getElementById('runBtn').textContent='Extract & Launch A2A Pipeline';
 }
-document.getElementById('pdfInput').addEventListener('change',e=>{pdfFile=e.target.files[0];document.getElementById('fileName').textContent=pdfFile?`✓ ${pdfFile.name}`:'';if(pdfFile)document.getElementById('runBtn').disabled=false;});
+document.getElementById('pdfInput').addEventListener('change',e=>{pdfFile=e.target.files[0];document.getElementById('fileName').textContent=pdfFile?`[OK] ${pdfFile.name}`:'';if(pdfFile)document.getElementById('runBtn').disabled=false;});
 const dz=document.getElementById('dropZone');
 dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
 dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');const f=e.dataTransfer.files[0];if(f?.name.endsWith('.pdf')){pdfFile=f;document.getElementById('fileName').textContent=`✓ ${f.name}`;document.getElementById('runBtn').disabled=false;}});
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');const f=e.dataTransfer.files[0];if(f?.name.endsWith('.pdf')){pdfFile=f;document.getElementById('fileName').textContent=`[OK] ${f.name}`;document.getElementById('runBtn').disabled=false;}});
 document.getElementById('runBtn').addEventListener('click',run);
 
-  // --- UI LOGIC ---
+  /* -- UI LOGIC -- */
   const themeToggle = document.getElementById('theme-toggle');
   const disconnectBtn = document.getElementById('disconnect-btn');
 
@@ -613,7 +613,7 @@ document.getElementById('runBtn').addEventListener('click',run);
     });
   });
 
-  // Search functionality
+  /* Search functionality */
   const mainSearch = document.getElementById('main-search');
   mainSearch.addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase();

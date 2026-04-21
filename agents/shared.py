@@ -122,7 +122,7 @@ def call_gemini(prompt_parts: list, run_id: str, label: str) -> str:
         "contents": [{"parts": prompt_parts}],
         "generationConfig": {"temperature": 0.1, "maxOutputTokens": 4096},
     }
-    push_log(run_id, f"Calling Gemini 2.5 Flash ({label})…")
+    push_log(run_id, f"Calling Gemini 2.5 Flash ({label})...")
     r = req_lib.post(url, json=payload, timeout=90)
     
     # Simple cost estimation: $0.0001 per call (placeholder)
@@ -153,7 +153,7 @@ def call_openrouter(
     if not OPENROUTER_KEY:
         raise RuntimeError("OPENROUTER_API_KEY not set in .env")
  
-    push_log(run_id, f"Calling OpenRouter free model ({label})…")
+    push_log(run_id, f"Calling OpenRouter free model ({label})...")
  
     body: dict = {
         "model":       "openrouter/free",

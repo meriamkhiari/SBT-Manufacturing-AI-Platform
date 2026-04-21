@@ -23,7 +23,7 @@ import qc_pipeline_runner as qc_pipeline_runner
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev-secret-key-change-me")
 
-# ── API ───────────────────────────────────────────────────────────────────
+# -- API --
 @app.post("/api/history/log")
 def api_log_action():
     body = request.get_json(force=True)
@@ -36,11 +36,11 @@ def api_log_action():
     historyAgent.log_action(action, details, user=user)
     return jsonify({"status": "ok"})
 
-# ── Register blueprints ───────────────────────────────────────────────────
+# -- Register blueprints --
 app.register_blueprint(extractAgent_bp)
 
 
-# ── AUTH ──────────────────────────────────────────────────────────────────
+# -- AUTH --
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -112,7 +112,7 @@ def logout():
     return redirect(url_for("login"))
 
 
-# ── UI ────────────────────────────────────────────────────────────────────
+# -- UI --
 @app.route("/")
 def index_root():
     if "user" in session:
@@ -134,7 +134,7 @@ def home():
 @app.route("/agent1")
 def agent1():
     if "user" not in session:
-        return redirect(url_for("login"))
+        return redirect(url_for("login" ))
     return render_template(
         "agent1.html",
         keys_configured=bool(OPENROUTER_KEY and GEMINI_KEY),
@@ -168,7 +168,7 @@ def history():
     )
 
 
-# ── QC Pipeline trigger ───────────────────────────────────────────────────
+# -- QC Pipeline trigger --
 @app.get("/api/references")
 def get_references():
     """
@@ -221,7 +221,7 @@ def qc_pipeline_start():
     return jsonify({"runId": run_id})
 
 
-# ── Pipeline trigger ──────────────────────────────────────────────────────
+# -- Pipeline trigger --
 @app.post("/api/pipeline/start")
 def pipeline_start():
     """
@@ -248,7 +248,7 @@ def pipeline_start():
     return jsonify({"runId": run_id})
 
 
-# ── SSE live log stream ───────────────────────────────────────────────────
+# -- SSE live log stream --
 @app.get("/pipeline/stream/<run_id>")
 def pipeline_stream(run_id: str):
     def generate():
@@ -268,7 +268,7 @@ def pipeline_stream(run_id: str):
                 yield ": ping\n\n"
                 continue
 
-            if item is None:                          # sentinel — pipeline done
+            if item is None:                          # sentinel - pipeline done
                 final = get_run(run_id)
                 yield f"data: {json.dumps({'__done__': True, 'status': final['status'], 'result': final['result']})}\n\n"
                 break
@@ -282,7 +282,7 @@ def pipeline_stream(run_id: str):
     )
 
 
-# ── Status poll ───────────────────────────────────────────────────────────
+# -- Status poll --
 @app.get("/pipeline/status/<run_id>")
 def pipeline_status(run_id: str):
     run = get_run(run_id)
@@ -291,7 +291,7 @@ def pipeline_status(run_id: str):
     return jsonify({"status": run["status"], "result": run["result"]})
 
 
-# ── Health check ──────────────────────────────────────────────────────────
+# -- Health check --
 @app.get("/health")
 def health():
     # MongoDB
@@ -307,14 +307,14 @@ def health():
     try:
         res = subprocess.run([MCP_BIN, "--version"], capture_output=True, text=True, timeout=4)
         ver = (res.stdout or res.stderr or "").strip()[:40]
-        mcp_status = f"available — {ver}" if ver else "available"
+        mcp_status = f"available - {ver}" if ver else "available"
     except FileNotFoundError:
         try:
-            subprocess.run(["npx", "mongodb-mcp-server", "--version"],
+            subprocess.run("npx", "mongodb-mcp-server", "--version",
                            capture_output=True, timeout=8)
             mcp_status = "available via npx"
         except Exception:
-            mcp_status = "⚠ not found — run: npm install -g mongodb-mcp-server"
+            mcp_status = "[!] not found - run: npm install -g mongodb-mcp-server"
     except Exception as exc:
         mcp_status = f"error: {exc}"
 
@@ -323,8 +323,8 @@ def health():
         "mongo":         mongo_status,
         "mcp_binary":    mcp_status,
         "mcp_transport": "stdio (subprocess per call)",
-        "openrouter":    "key set" if OPENROUTER_KEY else "⚠ missing",
-        "gemini":        "key set" if GEMINI_KEY     else "⚠ missing",
+        "openrouter":    "key set" if OPENROUTER_KEY else "[!] missing",
+        "gemini":        "key set" if GEMINI_KEY     else "[!] missing",
     })
 
 

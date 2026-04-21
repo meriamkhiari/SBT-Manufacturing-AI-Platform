@@ -3,40 +3,32 @@ import datetime
 from pymongo import MongoClient
 from agents.shared import MONGO_URI, MONGO_DB, HISTORY_COLL
 
-def log_action(action_type: str, details: str, user: str = "anonymous"):
+# -- Public methods --
+def log_action(action: str, details: str = "", user: str = "anonymous"):
     """
-    AGENT : historyAgent
-    Role: Track user actions with timestamps and store them in MongoDB.
+    Log a generic user action to MongoDB.
     """
     try:
         client = MongoClient(MONGO_URI)
         db = client[MONGO_DB]
-        coll = db[HISTORY_COLL]
-        
-        entry = {
+        db[HISTORY_COLL].insert_one({
             "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
             "user": user,
-            "action": action_type,
+            "action": action,
             "details": details
-        }
-        
-        coll.insert_one(entry)
-        return True
+        })
     except Exception as e:
-        print(f"Error logging history: {e}")
-        return False
+        print(f"[!] historyAgent: Failed to log action: {e}")
 
-def get_recent_history(limit: int = 50):
+
+def get_recent_history(limit: int = 100):
     """
-    Retrieve the most recent user actions.
+    Fetch the most recent history logs from MongoDB.
     """
     try:
         client = MongoClient(MONGO_URI)
         db = client[MONGO_DB]
-        coll = db[HISTORY_COLL]
-        
-        cursor = coll.find().sort("timestamp", -1).limit(limit)
-        return list(cursor)
+        return list(db[HISTORY_COLL].find().sort("timestamp", -1).limit(limit))
     except Exception as e:
-        print(f"Error fetching history: {e}")
+        print(f"[!] historyAgent: Failed to fetch history: {e}")
         return []

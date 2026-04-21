@@ -27,7 +27,7 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:var(--body);background:var(--bg);color:var(--text-primary);min-height:100vh;padding:var(--nav-h) 0 80px;display:flex;transition: background 0.3s, color 0.3s;}
 
-  /* ── NAVBAR ── */
+  /* -- NAVBAR -- */
   .navbar{
     position:fixed;top:0;left:0;right:0;height:var(--nav-h);
     background:var(--surface);border-bottom:1px solid var(--border);
@@ -318,7 +318,7 @@
     const ts = new Date().toLocaleTimeString();
     const line = document.createElement('div');
     line.className = `log-line ${level}`;
-    line.innerHTML = `<span class="log-ts">[${ts}]</span> ${msg}`;
+    line.innerText = `[${ts}] ${msg}`;
     logsDiv.appendChild(line);
     logsDiv.scrollTop = logsDiv.scrollHeight;
   }
@@ -397,7 +397,7 @@
     }
 
     scoreVal.innerText = result.score + '%';
-    verdictBanner.innerText = result.verdict === 'OK' ? 'CONFORMITY: OK' : 'CONFORMITY: FAIL';
+    verdictBanner.innerText = result.verdict === 'OK' ? '[OK] CONFORMITY: OK' : '[X] CONFORMITY: FAIL';
     verdictBanner.className = result.verdict === 'OK' ? 'verdict-banner ok' : 'verdict-banner fail';
     verdictBanner.style.display = 'block';
 
