@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { font-family: 'Inter', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+  body {
+    @apply bg-white text-ink-900 dark:bg-ink-950 dark:text-ink-100 antialiased;
+    transition: background-color .2s, color .2s;
+  }
+  /* Custom scrollbars ultra-fines */
+  ::-webkit-scrollbar       { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { @apply bg-transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-primary-400 dark:bg-primary-600 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-primary-500 dark:bg-primary-500; }
+  
+  /* Focus rings accessibles */
+  :focus-visible { @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-ink-900; }
+}
+
+@layer components {
+  .card        { @apply bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-800 rounded-2xl shadow-sm p-6; }
+  .card-hover  { @apply card transition-all duration-200 hover:shadow-md hover:-translate-y-0.5; }
+  .card-glass  { @apply backdrop-blur-xl bg-white/80 dark:bg-ink-900/80 border border-white/50 dark:border-ink-700/50 rounded-2xl shadow-glass p-6; }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-gradient-to-br from-primary-600 to-primary-500
+           hover:from-primary-700 hover:to-primary-600 text-white font-semibold px-4 py-2.5 rounded-xl shadow-sm
+           hover:shadow-md transition-all duration-200 hover:-translate-y-px active:translate-y-0 active:scale-[.98]
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 text-sm;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-ink-100 dark:bg-ink-800 hover:bg-ink-200 dark:hover:bg-ink-700
+           text-ink-700 dark:text-ink-200 font-semibold px-4 py-2.5 rounded-xl transition-all duration-200 active:scale-[.98]
+           border border-ink-200 dark:border-ink-700 text-sm;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 hover:bg-ink-100 dark:hover:bg-ink-800
+           text-ink-600 dark:text-ink-300 font-medium px-3 py-2 rounded-xl transition-colors text-sm;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold
+           px-4 py-2.5 rounded-xl transition-all duration-200 active:scale-[.98] shadow-sm hover:shadow-md
+           disabled:opacity-50 text-sm;
+  }
+  .btn-warning {
+    @apply inline-flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold
+           px-4 py-2.5 rounded-xl transition-all duration-200 active:scale-[.98] shadow-sm hover:shadow-md text-sm;
+  }
+  .input {
+    @apply w-full bg-white dark:bg-ink-900 border border-ink-300 dark:border-ink-700 rounded-xl px-3.5 py-2.5
+           text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
+           placeholder:text-ink-400 transition-colors;
+  }
+  .badge        { @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold; }
+  .badge-high   { @apply bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300; }
+  .badge-medium { @apply bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300; }
+  .badge-low    { @apply bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300; }
+
+  .navbar-shimmer {
+    position: absolute; top: 0; bottom: 0; width: 50%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    animation: shimmer 3s linear infinite;
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    @apply bg-ink-200 dark:bg-ink-800 animate-pulse rounded-lg;
+  }
+}
+
+.bg-grid { 
+  background-image: linear-gradient(to right, rgb(226 232 240 / .5) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgb(226 232 240 / .5) 1px, transparent 1px);
+  background-size: 32px 32px; 
+}
+.dark .bg-grid { 
+  background-image: linear-gradient(to right, rgb(30 41 59 / .5) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgb(30 41 59 / .5) 1px, transparent 1px); 
+}

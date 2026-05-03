@@ -1,0 +1,499 @@
+/* ============================================================================
+   SBT Design System v1.0 — Unified styling for all SBT apps.
+   Loaded by every task (1, 2, 3) so the whole platform looks like one product.
+   Served from: http://localhost:5050/static/sbt.css
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+/* ── Design tokens ────────────────────────────────────────────────────────── */
+:root {
+  /* Brand palette (mirrors integration/frontend/tailwind.config.js) */
+  --sbt-primary-50:  #eff6ff;
+  --sbt-primary-100: #dbeafe;
+  --sbt-primary-200: #bfdbfe;
+  --sbt-primary-300: #93c5fd;
+  --sbt-primary-400: #60a5fa;
+  --sbt-primary-500: #3b82f6;
+  --sbt-primary-600: #2563eb;
+  --sbt-primary-700: #1d4ed8;
+  --sbt-primary-800: #1e40af;
+  --sbt-primary-900: #1e3a8a;
+  --sbt-accent-500:  #06b6d4;  /* cyan */
+  --sbt-accent-600:  #0891b2;
+  --sbt-amber-500:   #f59e0b;
+
+  /* Neutrals */
+  --sbt-ink-50:  #f8fafc;
+  --sbt-ink-100: #f1f5f9;
+  --sbt-ink-200: #e2e8f0;
+  --sbt-ink-300: #cbd5e1;
+  --sbt-ink-400: #94a3b8;
+  --sbt-ink-500: #64748b;
+  --sbt-ink-600: #475569;
+  --sbt-ink-700: #334155;
+  --sbt-ink-800: #1e293b;
+  --sbt-ink-900: #0f172a;
+  --sbt-ink-950: #020617;
+
+  /* Status */
+  --sbt-success: #10b981;
+  --sbt-warning: #f59e0b;
+  --sbt-error:   #ef4444;
+
+  /* Spacing & radius */
+  --sbt-radius-sm: 8px;
+  --sbt-radius:    12px;
+  --sbt-radius-lg: 16px;
+  --sbt-radius-xl: 24px;
+
+  /* Shadows */
+  --sbt-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --sbt-shadow:    0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+  --sbt-shadow-lg: 0 12px 28px -8px rgb(0 0 0 / 0.12), 0 4px 12px -4px rgb(0 0 0 / 0.06);
+  --sbt-shadow-xl: 0 24px 48px -12px rgb(0 0 0 / 0.18);
+  --sbt-shadow-glow: 0 8px 24px -4px rgb(37 99 235 / 0.35);
+
+  /* Surfaces */
+  --sbt-bg:       #f8fafc;
+  --sbt-surface:  #ffffff;
+  --sbt-border:   #e2e8f0;
+  --sbt-text:     #0f172a;
+  --sbt-text-muted: #64748b;
+
+  /* Type scale */
+  --sbt-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+[data-theme="dark"], .dark {
+  --sbt-bg:       #020617;
+  --sbt-surface:  #0f172a;
+  --sbt-border:   #1e293b;
+  --sbt-text:     #f8fafc;
+  --sbt-text-muted: #94a3b8;
+}
+
+/* ── Base typography ──────────────────────────────────────────────────────── */
+.sbt, .sbt body, body.sbt {
+  font-family: var(--sbt-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--sbt-bg);
+  color: var(--sbt-text);
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.sbt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--sbt-radius);
+  font-family: var(--sbt-font);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  text-decoration: none;
+}
+.sbt-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.sbt-btn-primary {
+  background: linear-gradient(135deg, var(--sbt-primary-600), var(--sbt-accent-500));
+  color: #fff;
+  box-shadow: var(--sbt-shadow-glow);
+}
+.sbt-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 32px -6px rgb(37 99 235 / 0.5);
+}
+.sbt-btn-secondary {
+  background: var(--sbt-surface);
+  color: var(--sbt-text);
+  border-color: var(--sbt-border);
+}
+.sbt-btn-secondary:hover:not(:disabled) {
+  background: var(--sbt-ink-100);
+  border-color: var(--sbt-ink-300);
+}
+.sbt-btn-ghost {
+  background: transparent;
+  color: var(--sbt-text-muted);
+}
+.sbt-btn-ghost:hover:not(:disabled) {
+  background: var(--sbt-ink-100);
+  color: var(--sbt-text);
+}
+.sbt-btn-danger {
+  background: var(--sbt-error);
+  color: #fff;
+}
+.sbt-btn-danger:hover:not(:disabled) { background: #dc2626; }
+
+/* ── Inputs ───────────────────────────────────────────────────────────────── */
+.sbt-input, .sbt-select, .sbt-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--sbt-radius);
+  font-family: var(--sbt-font);
+  font-size: 14px;
+  color: var(--sbt-text);
+  background: var(--sbt-surface);
+  border: 1.5px solid var(--sbt-border);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.sbt-input:focus, .sbt-select:focus, .sbt-textarea:focus {
+  outline: none;
+  border-color: var(--sbt-primary-500);
+  box-shadow: 0 0 0 4px rgb(59 130 246 / 0.12);
+}
+.sbt-input::placeholder { color: var(--sbt-ink-400); }
+
+/* ── Cards ────────────────────────────────────────────────────────────────── */
+.sbt-card {
+  background: var(--sbt-surface);
+  border: 1px solid var(--sbt-border);
+  border-radius: var(--sbt-radius-lg);
+  padding: 24px;
+  box-shadow: var(--sbt-shadow-sm);
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+.sbt-card-hover:hover {
+  box-shadow: var(--sbt-shadow-lg);
+  transform: translateY(-2px);
+}
+.sbt-card-glass {
+  background: rgb(255 255 255 / 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgb(255 255 255 / 0.3);
+}
+
+/* ── Typography helpers ───────────────────────────────────────────────────── */
+.sbt-title       { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: var(--sbt-text); }
+.sbt-title-lg    { font-size: 36px; font-weight: 900; letter-spacing: -0.025em; }
+.sbt-eyebrow     { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: var(--sbt-primary-600); }
+.sbt-muted       { color: var(--sbt-text-muted); }
+
+/* ── Badges ───────────────────────────────────────────────────────────────── */
+.sbt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid;
+}
+.sbt-badge-primary { background: var(--sbt-primary-50);  color: var(--sbt-primary-700); border-color: var(--sbt-primary-200); }
+.sbt-badge-success { background: #ecfdf5;                 color: #047857;                border-color: #a7f3d0; }
+.sbt-badge-warning { background: #fffbeb;                 color: #b45309;                border-color: #fde68a; }
+.sbt-badge-error   { background: #fef2f2;                 color: #b91c1c;                border-color: #fecaca; }
+.sbt-badge-neutral { background: var(--sbt-ink-100);      color: var(--sbt-ink-700);     border-color: var(--sbt-ink-200); }
+
+/* ── Tables ───────────────────────────────────────────────────────────────── */
+.sbt-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--sbt-surface);
+  border-radius: var(--sbt-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--sbt-shadow-sm);
+}
+.sbt-table th {
+  padding: 12px 16px;
+  text-align: left;
+  background: var(--sbt-ink-50);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--sbt-ink-600);
+  border-bottom: 1px solid var(--sbt-border);
+}
+.sbt-table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--sbt-border);
+}
+.sbt-table tr:last-child td { border-bottom: none; }
+.sbt-table tr:hover { background: var(--sbt-ink-50); }
+
+/* ── Toasts (inline) ──────────────────────────────────────────────────────── */
+.sbt-toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  background: var(--sbt-surface);
+  border: 1px solid var(--sbt-border);
+  border-radius: var(--sbt-radius);
+  padding: 14px 18px;
+  box-shadow: var(--sbt-shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 380px;
+  animation: sbt-slide-in 0.3s ease-out;
+}
+@keyframes sbt-slide-in {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Loaders ──────────────────────────────────────────────────────────────── */
+.sbt-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--sbt-ink-200);
+  border-top-color: var(--sbt-primary-600);
+  border-radius: 50%;
+  animation: sbt-spin 0.8s linear infinite;
+  display: inline-block;
+}
+@keyframes sbt-spin { to { transform: rotate(360deg); } }
+
+/* ── Layout helpers ───────────────────────────────────────────────────────── */
+.sbt-container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+.sbt-stack > * + * { margin-top: 16px; }
+.sbt-cluster { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+
+/* ── Accent gradient text ─────────────────────────────────────────────────── */
+.sbt-gradient-text {
+  background: linear-gradient(135deg, var(--sbt-primary-600), var(--sbt-accent-500));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ── Smooth scroll & focus ring globaux ───────────────────────────────────── */
+html { scroll-behavior: smooth; }
+.sbt :focus-visible {
+  outline: 2px solid var(--sbt-primary-500);
+  outline-offset: 2px;
+}
+
+/* ── Responsive helpers ───────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .sbt-card { padding: 18px; border-radius: var(--sbt-radius); }
+  .sbt-title { font-size: 24px; }
+  .sbt-title-lg { font-size: 28px; }
+}
+
+/* ============================================================================
+   GLOBAL HARMONIZATION — applies SBT identity across all 3 task apps
+   without breaking their existing layouts. Loaded last to win specificity.
+   ============================================================================ */
+
+/* Force Inter font everywhere (overrides Barlow / Roboto / etc.) */
+html, body, button, input, select, textarea {
+  font-family: var(--sbt-font) !important;
+}
+
+/* Align legacy primary CSS variables to SBT brand (tâches 1 et 2 utilisent --primary) */
+:root {
+  --primary:        var(--sbt-primary-600) !important;
+  --primary-dark:   var(--sbt-primary-700) !important;
+  --primary-light:  var(--sbt-primary-300) !important;
+  --primary-rgb:    37, 99, 235;
+}
+
+/* Smooth all transitions for consistent feel */
+button, a, input, select, textarea, [class*="btn"], [class*="card"] {
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Modern scrollbar (subtle, brand color on hover) */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--sbt-ink-300);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--sbt-primary-500); background-clip: content-box; }
+
+/* Selection */
+::selection { background: var(--sbt-primary-500); color: #fff; }
+
+/* Focus rings — accessible & branded */
+*:focus-visible {
+  outline: 2px solid var(--sbt-primary-500) !important;
+  outline-offset: 2px !important;
+}
+
+/* Smooth all images by default */
+img { max-width: 100%; height: auto; }
+
+/* Animation utility classes anyone can add */
+.sbt-fade-in    { animation: sbt-fade 0.4s ease-out; }
+.sbt-slide-up   { animation: sbt-slide-up 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+@keyframes sbt-fade      { from { opacity: 0; }                    to { opacity: 1; } }
+@keyframes sbt-slide-up  { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ============================================================================
+   AUTO-HARMONIZATION — restyle native elements & legacy classes used across
+   tâches 1/2/3 so they all share the SBT visual identity by default.
+   Scoped with `:not(.sbt-no-style)` so any element can opt out.
+   ============================================================================ */
+
+/* --- Body baseline ---------------------------------------------------------- */
+html:not(.sbt-no-style) {
+  /* Zoom global +5% — uniformly scales all rem-based sizes */
+  font-size: 16.8px;
+}
+body:not(.sbt-no-style) {
+  background: var(--sbt-bg);
+  color: var(--sbt-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+/* --- All buttons get the SBT shape (subtle, doesn't kill custom colors) ----- */
+button:not(.sbt-no-style),
+input[type="submit"]:not(.sbt-no-style),
+input[type="button"]:not(.sbt-no-style),
+.btn:not(.sbt-no-style) {
+  border-radius: var(--sbt-radius);
+  font-weight: 600;
+  letter-spacing: 0;
+  transition: transform 0.15s, box-shadow 0.18s, background-color 0.18s, border-color 0.18s, color 0.18s;
+  cursor: pointer;
+}
+button:not(.sbt-no-style):hover:not(:disabled),
+.btn:not(.sbt-no-style):hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+button:not(.sbt-no-style):active:not(:disabled) { transform: translateY(0); }
+button:not(.sbt-no-style):focus-visible {
+  outline: 2px solid var(--sbt-primary-500);
+  outline-offset: 2px;
+}
+
+/* Primary-coloured buttons (any class containing "primary") --> SBT gradient */
+button.btn-primary:not(.sbt-no-style),
+.btn.btn-primary:not(.sbt-no-style),
+button.primary:not(.sbt-no-style),
+.login-btn:not(.sbt-no-style),
+.run-btn:not(.sbt-no-style),
+.cta:not(.sbt-no-style),
+input[type="submit"]:not(.sbt-no-style) {
+  background: linear-gradient(135deg, var(--sbt-primary-600), var(--sbt-accent-500)) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: var(--sbt-shadow-glow);
+  padding: 10px 20px;
+}
+button.btn-primary:not(.sbt-no-style):hover:not(:disabled),
+.btn.btn-primary:not(.sbt-no-style):hover:not(:disabled),
+.login-btn:not(.sbt-no-style):hover:not(:disabled),
+.run-btn:not(.sbt-no-style):hover:not(:disabled),
+.cta:not(.sbt-no-style):hover:not(:disabled),
+input[type="submit"]:not(.sbt-no-style):hover:not(:disabled) {
+  box-shadow: 0 12px 32px -6px rgb(37 99 235 / 0.5);
+  filter: brightness(1.05);
+}
+
+/* --- Inputs / selects / textareas ------------------------------------------ */
+input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not(.sbt-no-style),
+select:not(.sbt-no-style),
+textarea:not(.sbt-no-style) {
+  font-family: inherit;
+  border-radius: var(--sbt-radius);
+  border: 1.5px solid var(--sbt-border);
+  background: var(--sbt-surface);
+  color: var(--sbt-text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not(.sbt-no-style):focus,
+select:not(.sbt-no-style):focus,
+textarea:not(.sbt-no-style):focus {
+  outline: none;
+  border-color: var(--sbt-primary-500);
+  box-shadow: 0 0 0 4px rgb(59 130 246 / 0.12);
+}
+input:not(.sbt-no-style)::placeholder,
+textarea:not(.sbt-no-style)::placeholder { color: var(--sbt-ink-400); }
+
+/* --- Cards / panels (legacy class names across the 3 sites) ----------------- */
+.card:not(.sbt-no-style),
+.panel:not(.sbt-no-style),
+.box:not(.sbt-no-style),
+.section-card:not(.sbt-no-style),
+.about-card:not(.sbt-no-style),
+.service-card:not(.sbt-no-style),
+.result-card:not(.sbt-no-style) {
+  border-radius: var(--sbt-radius-lg);
+  box-shadow: var(--sbt-shadow-sm);
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+.card:not(.sbt-no-style):hover,
+.service-card:not(.sbt-no-style):hover {
+  box-shadow: var(--sbt-shadow);
+}
+
+/* --- Code / mono blocks ----------------------------------------------------- */
+code, kbd, pre, samp { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; }
+
+/* --- Headings rhythm -------------------------------------------------------- */
+h1, h2, h3, h4 { letter-spacing: -0.015em; }
+
+/* --- Links default ---------------------------------------------------------- */
+a:not(.sbt-no-style) {
+  color: var(--sbt-primary-600);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+a:not(.sbt-no-style):hover { color: var(--sbt-primary-700); }
+
+/* --- Nice toast appearance for any element with role="status"/.toast -------- */
+[role="status"], .toast {
+  border-radius: var(--sbt-radius-lg) !important;
+  box-shadow: var(--sbt-shadow-lg) !important;
+}
+
+/* --- Tables base look ------------------------------------------------------- */
+table:not(.sbt-no-style) {
+  border-radius: var(--sbt-radius);
+  overflow: hidden;
+}
+table:not(.sbt-no-style) th {
+  background: var(--sbt-ink-50);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+  color: var(--sbt-ink-600);
+}
+
+/* --- Modal/overlay smoothing ------------------------------------------------ */
+.modal:not(.sbt-no-style),
+.dialog:not(.sbt-no-style),
+[role="dialog"]:not(.sbt-no-style) {
+  border-radius: var(--sbt-radius-lg);
+  box-shadow: var(--sbt-shadow-xl);
+}
+
+/* --- Sidebars (legacy `.sidebar` in tâche 1) -------------------------------- */
+.sidebar:not(.sbt-no-style) {
+  background: var(--sbt-surface) !important;
+  border-color: var(--sbt-border) !important;
+}
+
+/* --- Disabled state coherence ----------------------------------------------- */
+:disabled, [disabled] { opacity: 0.55; cursor: not-allowed; }
+
+/* --- Print friendly --------------------------------------------------------- */
+@media print {
+  body { background: white !important; color: black !important; }
+  .sidebar, .navbar, header, footer { display: none !important; }
+}

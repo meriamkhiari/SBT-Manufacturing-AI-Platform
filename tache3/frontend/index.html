@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    
+    <link rel="stylesheet" href="/sbt.css">
+<meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+    <meta name="theme-color" content="#1e3a5f" />
+    <meta name="description" content="SBT Intelligence Platform — Prospection B2B géolocalisée AI-driven pour Smart Brain Technologie" />
+    <title>SBT Intelligence Platform</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <style>
+      /*
+       * Widget positionné hors écran (pas display:none) pour que GT s'initialise.
+       * GT crée le <select class="goog-te-combo"> nécessaire à sbtReapplyTranslation.
+       */
+      #google_translate_element {
+        position: fixed !important;
+        top: -9999px !important;
+        left: -9999px !important;
+        width: 1px !important;
+        height: 1px !important;
+        overflow: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+      }
+
+      /* ── Masquer TOUTE la barre/UI que Google Translate injecte ── */
+      .goog-te-banner-frame          { display: none !important; height: 0 !important; }
+      .goog-te-menu-frame            { display: none !important; }
+      #goog-gt-tt                    { display: none !important; }
+      .goog-tooltip                  { display: none !important; }
+      .goog-tooltip:hover            { display: none !important; }
+      /* Empêche Google de pousser le body vers le bas */
+      body                           { top: 0px !important; margin-top: 0 !important; }
+      /* Supprime la surbrillance jaune sur le texte traduit */
+      .goog-text-highlight           { background: none !important; box-shadow: none !important; }
+      font[style*="vertical-align: inherit"] { background-color: transparent !important; }
+    </style>
+  </head>
+  <body>
+    <!--
+      Widget Google Translate — positionné hors écran (pas display:none).
+      La traduction est déclenchée via le cookie googtrans + reload de page.
+      C'est la SEULE méthode fiable sur un SPA React.
+    -->
+    <div id="google_translate_element"></div>
+
+    <div id="root"></div>
+
+    <script>
+      /*
+       * ── MutationObserver : force le masquage de la barre GT ──
+       * Google Translate injecte un <iframe class="goog-te-banner-frame"> ET
+       * pousse le body vers le bas via body.style.top = '40px'.
+       * Ce script surveille le DOM et annule ces effets dès qu'ils apparaissent.
+       */
+      (function () {
+        function hideGTBar() {
+          var frames = document.querySelectorAll(
+            '.goog-te-banner-frame, iframe.skiptranslate, #goog-gt-tt, .goog-tooltip'
+          );
+          frames.forEach(function (el) { el.style.display = 'none'; el.style.height = '0'; });
+          if (document.body) {
+            document.body.style.top        = '0px';
+            document.body.style.marginTop  = '0px';
+            document.body.style.paddingTop = '0px';
+          }
+        }
+
+        // Observer lancé dès que <body> existe
+        var _obs = new MutationObserver(hideGTBar);
+        function startObserver() {
+          if (document.body) {
+            _obs.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+            hideGTBar();
+          } else {
+            setTimeout(startObserver, 50);
+          }
+        }
+        startObserver();
+
+        // Filets de sécurité supplémentaires
+        window.addEventListener('load',   hideGTBar);
+        setTimeout(hideGTBar, 1500);
+        setTimeout(hideGTBar, 4000);
+      })();
+
+      /* ── Initialisation Google Translate ── */
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: 'fr',
+            includedLanguages: 'fr,en,ar,es,de,it,pt,nl,ru,zh-CN,ja,ko,tr,pl,ro,bg,sv,da,fi,hu,cs,uk,he',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false,
+            multilanguagePage: true,
+          },
+          'google_translate_element'
+        );
+      }
+
+      /*
+       * Méthode appelée depuis React pour changer de langue.
+       * Approche : cookie googtrans + rechargement de page.
+       *
+       * Pourquoi le rechargement est NÉCESSAIRE :
+       * React restaure le DOM à chaque re-render, écrasant la traduction.
+       * Avec un rechargement, Google Translate traduit AVANT que React ne monte.
+       */
+      /* ── Sélection initiale de langue : cookie + reload ── */
+      window.sbtChangeLanguage = function(targetLang) {
+        var host    = window.location.hostname;
+        var expires = 'expires=Thu, 01 Jan 1970 00:00:00 UTC';
+
+        if (!targetLang || targetLang === 'fr') {
+          document.cookie = 'googtrans=; ' + expires + '; path=/';
+          document.cookie = 'googtrans=; ' + expires + '; path=/; domain=' + host;
+          document.cookie = 'googtrans=; ' + expires + '; path=/; domain=.' + host;
+        } else {
+          var value = '/fr/' + targetLang;
+          document.cookie = 'googtrans=' + value + '; path=/';
+          document.cookie = 'googtrans=' + value + '; path=/; domain=' + host;
+          document.cookie = 'googtrans=' + value + '; path=/; domain=.' + host;
+        }
+        window.location.reload();
+      };
+
+      /*
+       * ── Ré-application après navigation React Router ──
+       * Appelée depuis Layout.jsx après chaque changement de route.
+       * Le widget est déjà initialisé (page chargée), on manipule
+       * directement le <select class="goog-te-combo"> sans reload.
+       */
+      window.sbtReapplyTranslation = function() {
+        var match = document.cookie.match(/(?:^|;)\s*googtrans=\/fr\/([^;]+)/);
+        var lang  = match ? decodeURIComponent(match[1]) : null;
+        if (!lang || lang === 'fr') return;
+
+        var tries = 0;
+        function attempt() {
+          var sel = document.querySelector('.goog-te-combo');
+          if (sel) {
+            if (sel.value !== lang) {
+              sel.value = lang;
+              var evt = document.createEvent('HTMLEvents');
+              evt.initEvent('change', true, true);
+              sel.dispatchEvent(evt);
+            }
+          } else if (tries++ < 20) {
+            setTimeout(attempt, 250);
+          }
+        }
+        // Légère pause pour laisser React finir le rendu
+        setTimeout(attempt, 300);
+      };
+
+      /* Lit la langue active depuis le cookie googtrans */
+      window.sbtGetCurrentLang = function() {
+        var match = document.cookie.match(/(?:^|;)\s*googtrans=\/fr\/([^;]+)/);
+        return match ? decodeURIComponent(match[1]) : 'fr';
+      };
+    </script>
+
+    <!-- Google Translate SDK — chargé en async pour ne pas bloquer le rendu -->
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
+
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

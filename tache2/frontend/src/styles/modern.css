@@ -1,0 +1,279 @@
+/* ============================================================================
+   Task 2 - Modern Design Enhancements
+   Unified with SBT Design System
+   ============================================================================ */
+
+/* Import unified design system */
+@import url('http://localhost:5050/static/sbt-unified.css');
+
+/* Task 2 Specific Overrides */
+:root {
+  --task2-accent: #06b6d4;
+  --task2-accent-light: #22d3ee;
+}
+
+/* Vision Analysis Cards */
+.vision-card {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  transition: all var(--transition-base);
+}
+
+.vision-card:hover {
+  border-color: var(--task2-accent);
+  box-shadow: 0 8px 24px -4px rgba(6, 182, 212, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Detection Results */
+.detection-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--task2-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Image Upload Zone */
+.upload-zone {
+  position: relative;
+  padding: var(--space-12) var(--space-8);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(6, 182, 212, 0.02) 100%);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.upload-zone:hover {
+  border-color: var(--task2-accent);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
+  transform: scale(1.01);
+}
+
+.upload-zone.active {
+  border-color: var(--task2-accent);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+}
+
+/* Analysis Progress */
+.analysis-progress {
+  position: relative;
+  height: 8px;
+  background: var(--neutral-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.analysis-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-600), var(--task2-accent));
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+/* Defect Severity Indicators */
+.severity-critical {
+  color: var(--error);
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.severity-major {
+  color: var(--warning);
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.severity-minor {
+  color: var(--info);
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.severity-ok {
+  color: var(--success);
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Agent Status Cards */
+.agent-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.agent-status.active {
+  border-color: var(--task2-accent);
+  background: rgba(6, 182, 212, 0.05);
+}
+
+.agent-status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--neutral-300);
+  transition: all var(--transition-fast);
+}
+
+.agent-status.active .agent-status-dot {
+  background: var(--task2-accent);
+  box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.2);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Image Comparison Slider */
+.comparison-container {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.comparison-slider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--task2-accent);
+  cursor: ew-resize;
+  z-index: 10;
+}
+
+.comparison-slider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  background: white;
+  border: 2px solid var(--task2-accent);
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+}
+
+/* Report Export Button */
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  background: linear-gradient(135deg, var(--primary-600), var(--task2-accent));
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px -4px rgba(6, 182, 212, 0.4);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.export-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -6px rgba(6, 182, 212, 0.5);
+}
+
+/* Dataset Sample Grid */
+.sample-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.sample-card {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.sample-card:hover {
+  border-color: var(--task2-accent);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.sample-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.sample-card-info {
+  padding: var(--space-3);
+}
+
+.sample-card-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.sample-card-meta {
+  font-size: 0.625rem;
+  color: var(--text-muted);
+}
+
+/* XAI Explanation Panel */
+.xai-panel {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+.xai-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #8b5cf6;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-4);
+}
+
+.xai-content {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .sample-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .vision-card {
+    padding: var(--space-4);
+  }
+
+  .upload-zone {
+    padding: var(--space-8) var(--space-4);
+  }
+}

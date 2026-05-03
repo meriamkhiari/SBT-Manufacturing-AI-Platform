@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Integration Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      /* ── Google Translate Widget (hidden off-screen) ── */
+      #google_translate_element {
+        position: fixed !important;
+        top: -9999px !important;
+        left: -9999px !important;
+        width: 1px !important;
+        height: 1px !important;
+        overflow: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
+      /* ── Hide ALL Google Translate UI ── */
+      .goog-te-banner-frame { display: none !important; height: 0 !important; }
+      .goog-te-menu-frame { display: none !important; }
+      .goog-te-balloon-frame { display: none !important; }
+      body { top: 0 !important; }
+      .skiptranslate { display: none !important; }
+      
+      /* ── Prevent body shift ── */
+      body.translated-ltr { margin-top: 0 !important; }
+      body.translated-rtl { margin-top: 0 !important; }
+    </style>
+    <script>
+      (function () {
+        const t = localStorage.getItem('theme');
+        const dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (dark) document.documentElement.classList.add('dark');
+      })();
+    </script>
+  </head>
+  <body class="bg-ink-50 dark:bg-ink-950">
+    <!-- Google Translate Widget (hidden off-screen) -->
+    <div id="google_translate_element"></div>
+    
+    <div id="root"></div>
+    
+    <script>
+      /* ── MutationObserver: Force hide Google Translate banner ── */
+      (function() {
+        const observer = new MutationObserver(() => {
+          const banner = document.querySelector('.goog-te-banner-frame');
+          if (banner) {
+            banner.style.display = 'none';
+            banner.style.height = '0';
+          }
+          if (document.body.style.top) {
+            document.body.style.top = '0';
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+      })();
+
+      /* ── Initialize Google Translate ── */
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: 'fr',
+            includedLanguages: 'fr,en,ar,es,de,it,pt,nl,ru,zh-CN,ja,ko,tr,pl,ro,bg,sv,da,fi,hu,cs,uk,he',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false,
+            multilanguagePage: true,
+          },
+          'google_translate_element'
+        );
+      }
+
+      /* ── Helper functions for language switching ── */
+      window.sbtGetCurrentLang = function() {
+        const cookie = document.cookie.split('; ').find(row => row.startsWith('googtrans='));
+        if (!cookie) return 'fr';
+        const val = cookie.split('=')[1];
+        const parts = val.split('/');
+        return parts[2] || 'fr';
+      };
+
+      window.sbtChangeLanguage = function(langCode) {
+        const domain = window.location.hostname;
+        document.cookie = `googtrans=/fr/${langCode}; path=/; domain=${domain}`;
+        document.cookie = `googtrans=/fr/${langCode}; path=/`;
+        setTimeout(() => window.location.reload(), 100);
+      };
+
+      /* ── Re-apply translation after React navigation ── */
+      window.sbtReapplyTranslation = function() {
+        const select = document.querySelector('.goog-te-combo');
+        if (!select) return;
+        const currentLang = window.sbtGetCurrentLang();
+        if (select.value !== currentLang) {
+          select.value = currentLang;
+          select.dispatchEvent(new Event('change'));
+        }
+      };
+    </script>
+
+    <!-- Google Translate SDK -->
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
+    
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
